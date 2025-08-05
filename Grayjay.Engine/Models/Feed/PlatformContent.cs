@@ -30,6 +30,8 @@ namespace Grayjay.Engine.Models.Feed
     {
         private IJavaScriptObject _object;
 
+        private string _name;
+
         public virtual ContentType ContentType { get; } = ContentType.UNKNOWN;
 
         [V8Property("id")]
@@ -40,7 +42,11 @@ namespace Grayjay.Engine.Models.Feed
         public virtual DateTime DateTime { get; set; }
 
         [V8Property("name")]
-        public virtual string Name { get; set; }
+        public virtual string Name
+        {
+            get => _name;
+            set => _name = string.IsNullOrEmpty(value) ? value : System.Net.WebUtility.HtmlDecode(value);
+        }
 
         [V8Property("author")]
         public virtual PlatformAuthorLink Author { get; set; }
