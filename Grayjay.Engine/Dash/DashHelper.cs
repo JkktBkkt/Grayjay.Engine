@@ -11,6 +11,7 @@ namespace Grayjay.Engine.Dash
         public static Regex REGEX_DASH_REPRESENTATION = new Regex("<Representation (.*?)>(.*?)<\\/Representation>", RegexOptions.Singleline);
         public static Regex REGEX_DASH_TEMPLATE = new Regex("<SegmentTemplate (.*?)>(.*?)<\\/SegmentTemplate>", RegexOptions.Singleline);
         public static Regex REGEX_DASH_CUE = new Regex("<S .*?t=\"([0-9]*?)\".*?d=\"([0-9]*?)\".*?\\/>", RegexOptions.Singleline);
+        public static Regex REGEX_DASH_BASEURL = new Regex("<BaseUrl>(.*?)<\\/BaseUrl>", RegexOptions.Singleline);
 
         private static string? GetTagAttribute(string input, string tagName)
         {

@@ -14,6 +14,7 @@ namespace Grayjay.Engine.Dash
 
         public static Regex REGEX_REPRESENTATION = new Regex("<Representation .*?mimeType=\"(.*?)\".*?>(.*?)<\\/Representation>", RegexOptions.Singleline);
         public static Regex REGEX_MEDIA_INITIALIZATION = new Regex("(media|initiali[sz]ation)=\"([^\"]+)\"", RegexOptions.Singleline);
+        public static Regex REGEX_BASEURL = new Regex("<BaseURL>(.*?)<\\/BaseURL>", RegexOptions.Singleline);
 
 
         public static string PROFILE_MAIN = "urn:mpeg:dash:profile:isoff-main:2011";
