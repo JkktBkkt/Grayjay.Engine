@@ -86,7 +86,6 @@ namespace Grayjay.Engine.Models.Video.Additions
             }
         }
 
-        //Headers must be a real JS object so plugins can pass them straight into http.* calls
         private object MarshalHeaders(Dictionary<string, string> headers)
         {
             object jsHeaders = headers;
@@ -107,29 +106,34 @@ namespace Grayjay.Engine.Models.Video.Additions
 
         private byte[] HandleExecuteRequestResult(object result)
         {
-            //Host functions like utility.fromBase64 return .NET byte[] straight through V8
             if (result is byte[] rawBytes)
+            {
                 return rawBytes;
+            }
             if (result is string str)
             {
-                var base64Result = Convert.FromBase64String(str);
-                return base64Result;
+                return Convert.FromBase64String(str);
             }
-            else if (result is ITypedArray typedArray)
+            if (result is ITypedArray typedArray)
             {
-                var buffer = typedArray.ArrayBuffer;
-                byte[] data = new byte[buffer.Size];
-                buffer.ReadBytes(0, buffer.Size, data, 0);
-                return data;
+                return ReadTypedArray(typedArray);
             }
-            else if (result is IArrayBuffer buffer)
+            if (result is IArrayBuffer arrayBuffer)
             {
-                byte[] data = new byte[buffer.Size];
-                buffer.ReadBytes(0, buffer.Size, data, 0);
-                return data;
+                return ReadArrayBuffer(arrayBuffer);
             }
-            else
-                throw new NotImplementedException();
+            throw new ScriptImplementationException(_config,
+                $"executeRequest returned an unsupported result type [{result?.GetType().FullName ?? "null"}]");
+        }
+
+        private static byte[] ReadTypedArray(ITypedArray typedArray)
+        {
+            return typedArray.Size == 0 ? Array.Empty<byte>() : typedArray.GetBytes();
+        }
+
+        private static byte[] ReadArrayBuffer(IArrayBuffer buffer)
+        {
+            return buffer.Size == 0 ? Array.Empty<byte>() : buffer.GetBytes();
         }
 
         public virtual void Cleanup()
