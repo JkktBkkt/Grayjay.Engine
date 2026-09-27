@@ -39,6 +39,8 @@ namespace Grayjay.Engine.Models.Video.Sources
                     return typeof(HLSManifestWidevineAudioSource);
                 case "DashRawAudioSource":
                     return typeof(DashManifestRawAudioSource);
+                case "UMPAudioFormatSource":
+                    return typeof(UMPAudioFormatSource);
                 case "AudioSourceDescription":
                     return typeof(AudioSourceDescription);
             }
