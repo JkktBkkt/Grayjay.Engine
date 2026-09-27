@@ -856,18 +856,25 @@ namespace Grayjay.Engine
         //TODO: move this to a different location
         public static ScriptException GetExceptionFromV8(PluginConfig config, IJavaScriptObject obj)
         {
-            if (obj.PropertyNames.Contains("plugin_type"))
+            string ReadString(string property)
             {
-                string plugin_type = obj?.GetProperty("plugin_type")?.ToString() ?? "";
-                string msg = (obj.PropertyNames.Contains("msg")) ? obj.GetProperty("msg")?.ToString() : "";
-                return GetExceptionFromV8(config, plugin_type, msg);
+                try { return obj.GetProperty(property) as string; }
+                catch { return null; }
             }
-            else if (obj.PropertyNames.Contains("msg"))
-                return new ScriptException(config, "P: " + obj.GetProperty("msg")?.ToString());
-            else if (obj.PropertyNames.Contains("message"))
-                return new ScriptException(config, "P: " + obj.GetProperty("message")?.ToString());
-            else
-                return new ScriptException(config, "P: " + obj.ToString());
+
+            string pluginType = ReadString("plugin_type");
+            string message = ReadString("msg") ?? ReadString("message");
+            string stack = ReadString("stack");
+            if (message == null)
+            {
+                try { message = obj.InvokeMethod("toString") as string; }
+                catch { }
+            }
+            message ??= "Promise was rejected with a JavaScript object without an error message";
+
+            return pluginType != null
+                ? GetExceptionFromV8(config, pluginType, message, stack: stack)
+                : new ScriptException(config, "P: " + message, stack: stack);
         }
         private ScriptException GetExceptionFromV8(string pluginType, string msg, Exception innerEx = null, string stack = null, string code = null) => GetExceptionFromV8(Config, pluginType, msg, innerEx, stack, code);
         private static ScriptException GetExceptionFromV8(PluginConfig config, string pluginType, string msg, Exception innerEx = null, string stack = null, string code = null)
