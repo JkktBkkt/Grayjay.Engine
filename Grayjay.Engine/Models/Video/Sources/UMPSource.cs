@@ -179,26 +179,8 @@ namespace Grayjay.Engine.Models.Video.Sources
         public string Container => CONTAINER;
         public string Codec => "";
 
-        public bool HasGetPoToken { get; private set; }
-
         public UMPSource() { }
-        public UMPSource(GrayjayPlugin plugin, IJavaScriptObject obj) : base(plugin, obj)
-        {
-            HasGetPoToken = obj.HasFunction("getPoToken");
-        }
-
-        public string? GetPoToken(bool forceRefresh)
-        {
-            if (!HasGetPoToken || _obj == null)
-                return PoToken;
-            var result = _obj.InvokeV8(_plugin.Config, "getPoToken", forceRefresh);
-            if (result is string str && !string.IsNullOrEmpty(str))
-            {
-                PoToken = str;
-                return str;
-            }
-            return PoToken;
-        }
+        public UMPSource(GrayjayPlugin plugin, IJavaScriptObject obj) : base(plugin, obj) { }
 
         public List<UMPVideoFormatSource> GetVideoFormatSources() =>
             VideoFormats.OrderByDescending(x => (long)x.Height * 100000 + x.Bitrate)

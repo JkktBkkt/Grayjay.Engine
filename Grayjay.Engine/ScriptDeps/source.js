@@ -573,8 +573,6 @@ class UMPSource {
         this.videoFormats = obj.videoFormats ?? [];
         this.audioFormats = obj.audioFormats ?? [];
         this.poToken = obj.poToken;
-        if(obj.getPoToken)
-            this.getPoToken = obj.getPoToken;
         if(obj.requestModifier)
             this.requestModifier = obj.requestModifier;
     }
