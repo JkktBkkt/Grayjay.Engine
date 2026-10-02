@@ -115,7 +115,7 @@ namespace Grayjay.Engine.Dash
             {
                 { "mimeType", subtitleSource.Format ?? "text/vtt" },
                 { "default", "true" },
-                { "lang", "en" },
+                { "lang", Grayjay.Engine.Models.Subtitles.SubtitleLanguage.Resolve(subtitleSource.Language, subtitleSource.Name) },
                 { "bandwidth", "1000" },
             }, representation =>
             {
@@ -188,11 +188,12 @@ namespace Grayjay.Engine.Dash
                 dashBuilder.WithAdaptationSet(new Dictionary<string, string>
                 {
                     { "mimeType", subtitleSource.Format ?? "text/vtt" },
-                    { "lang", "en" },
+                    { "lang", Grayjay.Engine.Models.Subtitles.SubtitleLanguage.Resolve(subtitleSource.Language, subtitleSource.Name) },
                     { "default", "true" }
                 }, adaptationSet =>
                 {
                     //TODO: Verify if & really should be replaced like this?
+                    adaptationSet.Tag("Role", new Dictionary<string, string> { { "schemeIdUri", "urn:mpeg:dash:role:2011" }, { "value", "main" } }, _ => { });
                     adaptationSet.WithRepresentationOnDemand("caption_en", (ISubtitleSource)subtitleSource, subtitleUrl.Replace("&", "&amp;"));
                 });
             }

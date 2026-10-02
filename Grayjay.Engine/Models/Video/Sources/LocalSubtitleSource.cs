@@ -6,6 +6,7 @@ namespace Grayjay.Engine.Models.Video.Sources
     public class LocalSubtitleSource : ISubtitleSource
     {
         public string Name { get; set; }
+        public string? Language { get; set; }
         public string? Url { get; set; }
         public string? Format { get; set; }
         public bool HasFetch { get; set; } = false;
@@ -18,6 +19,7 @@ namespace Grayjay.Engine.Models.Video.Sources
             return new LocalSubtitleSource()
             {
                 Name = source.Name,
+                Language = source.Language,
                 Url = source.Url,
                 Format = source.Format,
                 FilePath = path
